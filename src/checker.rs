@@ -13,15 +13,49 @@ pub fn check(filename: String) {
         println!("{:?}", config);
 
         let env = fs::read_to_string("fixtures/.env").expect(".env file not found");
-        let variables: Vec<&str> = env.split("\n").collect();
-        println!("variables {:?}", variables);
+        let lines: Vec<&str> = env.split("\n").collect();
+        println!("variables {:?}", lines);
 
         // Iterate variables
-        for variable in variables {
-            let var_string: Vec<&str> = variable.split("=").collect();
-            let name = var_string[0];
-            let value = var_string[1];
-            println!("{} has value {}", name, value);
+        for line in lines {
+            // If line is empty, skip
+            if line.is_empty() {
+                continue;
+            }
+            let var_string: Vec<&str> = line.split("=").collect();
+            // Convert to String vector
+            let var_string: Vec<String> = var_string.iter().map(|x| x.to_string()).collect();
+
+            // Check name
+            let name = var_string.get(0);
+            if name.is_none() {
+                println!("Name is not defined");
+                continue;
+            }
+            let name = name.unwrap();
+            if name.is_empty() {
+                println!("Name is empty");
+                continue;
+            }
+
+            // Check value
+            let value = var_string.get(1);
+            if value.is_none() {
+                println!("Value is not present");
+                continue;
+            }
+            let value = value.unwrap();
+            if value.is_empty() {
+                println!("value is empty");
+                continue;
+            }
+
+            // Check if variable is defined in config
+            if config.variables.contains(name) {
+                println!("{} is declared!", name);
+            } else {
+                println!("{} is not declared", name);
+            }
         }
     } else {
         println!("Envful manifest not found");
