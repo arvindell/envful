@@ -5,3 +5,5 @@ pub mod checker;
 pub struct Envful {
     pub variables: Vec<String>,
 }
+
+pub struct EnvVar(String, String);

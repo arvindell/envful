@@ -2,15 +2,12 @@ use envful::checker;
 use std::env;
 
 fn main() {
-    println!("Envful!");
     let args: Vec<String> = env::args().collect();
-    println!("{:?}", args);
 
     let command = &args[1];
-    println!("{}", command);
-
+    let dir = &args[2];
     match command.as_str() {
-        "check" => checker::check(String::from("fixtures/envful.json")),
+        "check" => checker::check(String::from(dir) + "envful.json"),
         _ => {
             println!("Command not recognized")
         }
