@@ -28,7 +28,7 @@ fn main() {
     let args = Args::parse();
     let dir = args.dir.unwrap_or_else(|| PathBuf::from("."));
     match args.command {
-        Commands::Check => checker::check(&dir, true, false),
-        Commands::Other(args) => runner::run(&dir, &args),
+        Commands::Check => checker::check_command(&dir, true, false),
+        Commands::Other(args) => runner::run_command(&dir, &args),
     }
 }

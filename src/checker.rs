@@ -2,11 +2,10 @@ use crate::EnvVar;
 use crate::Envful;
 use colored::*;
 use serde_json;
+use std::fs;
 use std::path::PathBuf;
 
-use std::fs;
-
-pub fn check(dir: &PathBuf, show_undeclared: bool, silent: bool) {
+pub fn check_command(dir: &PathBuf, show_undeclared: bool, silent: bool) {
     if !silent {
         println!("{}", "Checking env vars...".cyan());
     }
