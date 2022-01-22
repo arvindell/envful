@@ -79,7 +79,7 @@ fn get_config(path: &PathBuf) -> Envful {
         let config: Envful = serde_json::from_str(contents.as_str()).unwrap();
         return config;
     } else {
-        println!("Envful manifest not found: {}", path.display());
+        eprintln!("Envful manifest not found in {}", path.display());
         std::process::exit(1);
     }
 }
@@ -113,7 +113,7 @@ fn parse_env_file(path: &PathBuf) -> Vec<EnvVar> {
         // Check key
         let key = var_string.get(0);
         if key.is_none() {
-            println!("name is not present");
+            eprintln!("Name is not present");
             std::process::exit(1);
         }
         let key = parse_token(key.unwrap());
@@ -121,7 +121,7 @@ fn parse_env_file(path: &PathBuf) -> Vec<EnvVar> {
 
         let value = var_string.get(1);
         if value.is_none() {
-            println!("name is not present");
+            eprintln!("Name is not present");
             std::process::exit(1);
         }
         let value = parse_token(value.unwrap());
