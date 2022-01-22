@@ -1,24 +1,24 @@
-mod tests {
-    use assert_cmd::prelude::*; // Add methods on commands
-    use predicates::prelude::*; // Used for writing assertions
+mod check_spec {
+    use assert_cmd::prelude::*;
+    use predicates::prelude::*;
     use std::process::Command;
 
     #[test]
     fn succeeds_with_required() -> Result<(), Box<dyn std::error::Error>> {
-        run("success", true, "All variables are present")
+        run_check("success", true, "All variables are present")
     }
 
     #[test]
     fn fails_with_missing() -> Result<(), Box<dyn std::error::Error>> {
-        run("missing", false, "Missing")
+        run_check("missing", false, "Missing")
     }
 
     #[test]
     fn fails_if_malformed() -> Result<(), Box<dyn std::error::Error>> {
-        run("malformed", false, "Missing")
+        run_check("malformed", false, "Missing")
     }
 
-    fn run(
+    fn run_check(
         fixture: &str,
         should_succeed: bool,
         expected_out_put: &str,
