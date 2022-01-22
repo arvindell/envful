@@ -17,7 +17,13 @@ pub fn run_command(dir: &PathBuf, command: &Vec<String>) {
             std::process::exit(code.code().unwrap());
         }
         Err(e) => {
-            panic!("{}", e);
+            // Check if e is of type file_not_found
+            if e.kind() == std::io::ErrorKind::NotFound {
+                eprintln!("{} Make sure the binary is in your PATH (not an alias)", e);
+                std::process::exit(1);
+            } else {
+                panic!("{}", e);
+            }
         }
     }
 }
