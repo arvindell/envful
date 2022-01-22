@@ -1,29 +1,38 @@
 mod tests {
-    use std::process::{Command, Stdio};
+    use assert_cmd::prelude::*; // Add methods on commands
+    use predicates::prelude::*; // Used for writing assertions
+    use std::process::Command;
 
     #[test]
-    fn succeeds_with_required() {
-        let status = Command::new("cargo")
-            .args(["run", "--", "check", "-d", "tests/fixtures/success"])
-            .stdout(Stdio::null())
-            .status();
-        assert_eq!(status.unwrap().code(), Some(0));
+    fn succeeds_with_required() -> Result<(), Box<dyn std::error::Error>> {
+        run("success", true, "All variables are present")
     }
 
     #[test]
-    fn fails_with_missing() {
-        let status = Command::new("cargo")
-            .args(["run", "--", "check", "-d", "tests/fixtures/missing"])
-            .stdout(Stdio::null())
-            .status();
-        assert_eq!(status.unwrap().code(), Some(1));
+    fn fails_with_missing() -> Result<(), Box<dyn std::error::Error>> {
+        run("missing", false, "Missing")
     }
+
     #[test]
-    fn fails_if_malformed() {
-        let status = Command::new("cargo")
-            .args(["run", "--", "check", "-d", "tests/fixtures/malformed"])
-            .stdout(Stdio::null())
-            .status();
-        assert_eq!(status.unwrap().code(), Some(1));
+    fn fails_if_malformed() -> Result<(), Box<dyn std::error::Error>> {
+        run("malformed", false, "Missing")
+    }
+
+    fn run(
+        fixture: &str,
+        should_succeed: bool,
+        expected_out_put: &str,
+    ) -> Result<(), Box<dyn std::error::Error>> {
+        let mut cmd = Command::cargo_bin("envful")?;
+        let dir = format!("tests/fixtures/{}", fixture);
+        cmd.args(["check", "-d", dir.as_str()]);
+
+        let predicate = predicate::str::contains(expected_out_put);
+        if should_succeed {
+            cmd.assert().success().stdout(predicate);
+        } else {
+            cmd.assert().failure().stderr(predicate);
+        }
+        Ok(())
     }
 }

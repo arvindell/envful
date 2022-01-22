@@ -17,6 +17,10 @@ serde_json = "1.0.48"
 colored = "2"
 clap = { version = "3.0.10", features = ["derive"] }
 
+[dev-dependencies]
+assert_cmd = "2.0"
+predicates = "2.1"
+
 [lib]
 name = "envful"
 path = "src/lib.rs"
