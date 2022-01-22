@@ -35,13 +35,15 @@ pub fn check(dir: &PathBuf, show_undeclared: bool) {
         if undeclared_vars.len() > 0 {
             println!(
                 "{}",
-                "Variables not declared in the manifest:".yellow().bold()
+                "Found variables not declared in the manifest:"
+                    .yellow()
+                    .bold()
             );
             for undeclared_var in undeclared_vars {
                 println!(
                     "{} {}",
-                    " Undeclared variable:".yellow().bold(),
-                    undeclared_var.yellow().bold()
+                    " Undeclared variable:".yellow(),
+                    undeclared_var.yellow()
                 );
             }
         }

@@ -29,7 +29,7 @@ fn main() {
     let dir = args.dir;
     let dir = dir.unwrap_or_else(|| PathBuf::from("."));
     match args.command {
-        Commands::Check => checker::check(&dir, false),
+        Commands::Check => checker::check(&dir, true),
         Commands::Run { command } => runner::run(&dir, &command),
     }
 }
