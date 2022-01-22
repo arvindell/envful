@@ -1,9 +1,14 @@
 [package]
 name = "envful"
 version = "0.1.0"
-edition = "2021"
-
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+authors = ["Alex Vilchis <alex@quentli.com>"]
+license = "MIT"
+description = "A tool to check env vars are present"
+readme = "README.md"
+# homepage = "https://github.com/you/grrs"
+# repository = "https://github.com/you/grrs"
+keywords = ["cli", "env", "envful"]
+categories = ["command-line-utilities"]
 
 [dependencies]
 serde = { version = "1.0.104", features = ["derive"] }
