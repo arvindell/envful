@@ -6,7 +6,7 @@ use std::path::PathBuf;
 
 use std::fs;
 
-pub fn check(dir: PathBuf, show_undeclared: bool) {
+pub fn check(dir: &PathBuf, show_undeclared: bool) {
     println!("{}", "Checking env vars...".cyan());
 
     let manifest_path = dir.clone().join("envful.json");
@@ -95,7 +95,7 @@ fn parse_env_file(path: &PathBuf) -> Vec<EnvVar> {
         // Get variable description
         if line.starts_with("#!") {
             let chars = line.split("#!").collect::<Vec<&str>>();
-            let description = chars.last().unwrap();
+            let _description = chars.last().unwrap();
         }
 
         // If line starts with #, skip
