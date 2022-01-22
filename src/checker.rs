@@ -6,8 +6,10 @@ use std::path::PathBuf;
 
 use std::fs;
 
-pub fn check(dir: &PathBuf, show_undeclared: bool) {
-    println!("{}", "Checking env vars...".cyan());
+pub fn check(dir: &PathBuf, show_undeclared: bool, silent: bool) {
+    if !silent {
+        println!("{}", "Checking env vars...".cyan());
+    }
 
     let manifest_path = dir.clone().join("envful.json");
     let env_file_path = dir.clone().join(".env");
@@ -65,7 +67,9 @@ pub fn check(dir: &PathBuf, show_undeclared: bool) {
         // Exit with error code
         std::process::exit(1);
     }
-    println!("{}", "All variables are present ✅".green());
+    if !silent {
+        println!("{}", "All variables are present ✅".green());
+    }
 }
 
 fn get_config(path: &PathBuf) -> Envful {
