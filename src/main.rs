@@ -17,10 +17,8 @@ struct Args {
 #[derive(Subcommand, Debug)]
 enum Commands {
     Check,
-    Run {
-        #[clap(raw = true)]
-        command: String,
-    },
+    #[clap(external_subcommand)]
+    Other(Vec<String>),
 }
 
 fn main() {
@@ -28,8 +26,9 @@ fn main() {
 
     let dir = args.dir;
     let dir = dir.unwrap_or_else(|| PathBuf::from("."));
+
     match args.command {
         Commands::Check => checker::check(&dir, true),
-        Commands::Run { command } => runner::run(&dir, &command),
+        Commands::Other(args) => runner::run(&dir, &args),
     }
 }

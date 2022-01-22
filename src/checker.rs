@@ -76,7 +76,7 @@ fn get_config(path: &PathBuf) -> Envful {
         let config: Envful = serde_json::from_str(contents.as_str()).unwrap();
         return config;
     } else {
-        println!("Envful manifest not found");
+        println!("Envful manifest not found: {}", path.display());
         std::process::exit(1);
     }
 }
