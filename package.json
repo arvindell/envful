@@ -1,0 +1,26 @@
+{
+  "name": "envful",
+  "version": "0.2.0",
+  "description": "A tool to verify the existence of environment variables before running a process",
+  "files": [
+    "npm/**/*"
+  ],
+  "bin": {
+    "envful": "./npm/run.js"
+  },
+  "scripts": {
+    "postinstall": "node npm/install.js",
+    "preinstall": "node npm/uninstall.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/arvindell/envful.git"
+  },
+  "keywords": [],
+  "author": "Alex Vilchis <alex@quentli.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/arvindell/envful/issues"
+  },
+  "homepage": "https://github.com/arvindell/envful#readme"
+}
