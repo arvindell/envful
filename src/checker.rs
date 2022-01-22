@@ -52,12 +52,12 @@ pub fn check_command(dir: &PathBuf, show_undeclared: bool, silent: bool) {
 
     if error {
         // Print message for every missing var
-        println!(
+        eprintln!(
             "{}",
             "The process is missing environment variables:".red().bold()
         );
         for missing_var in missing_vars {
-            println!(
+            eprintln!(
                 "{} {}",
                 "❌ Missing variable:".yellow(),
                 missing_var.yellow()
@@ -127,7 +127,7 @@ fn parse_env_file(path: &PathBuf) -> Vec<EnvVar> {
         let value = parse_token(value.unwrap());
 
         if value.is_empty() {
-            println!(
+            eprintln!(
                 "{}",
                 format!(
                     "Value for variable {} is empty, please verify your .env file",
