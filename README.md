@@ -8,7 +8,7 @@ Envful is a CLI tool that verifies the presence of environment variables before 
 
 ### NPM
 
-You can install Envful using NPM, allowing you to run it from your projects scripts.
+You can install Envful using NPM, allowing you to run it from your project's scripts.
 
 ```bash
 npm install envful
@@ -16,7 +16,7 @@ npm install envful
 
 ### crates.io
 
-You can also install dirrectly from crates.io using cargo.
+You can also install directly from crates.io using cargo.
 
 ```bash
 cargo install envful
