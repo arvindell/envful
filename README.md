@@ -1,6 +1,6 @@
 # Envful
 
-Envful is a CLI tool that verifies the presence of environment variables before running a process. It looks inside your [.env](https://www.npmjs.com/package/dotenv) file and system environment.
+Envful is a CLI tool that verifies the presence of environment variables. It looks inside your [.env](https://www.npmjs.com/package/dotenv) file and system environment.
 
 <!-- Add image -->
 
