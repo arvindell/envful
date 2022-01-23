@@ -1,6 +1,6 @@
 # Envful
 
-Envful is a CLI tool that verifies the presence of environment variables before running a process. It looks for `.env` files and if not found there, it searches in your system environment.
+Envful is a CLI tool that verifies the presence of environment variables before running a process. It looks inside your [.env](https://www.npmjs.com/package/dotenv) file and system environment.
 
 <!-- Add image -->
 
@@ -24,7 +24,7 @@ cargo install envful
 
 ## Usage
 
-Envful uses the `.env.example` file as a manifest for which variables are needed. If your project contains `.env.example` it already supports envful!
+Envful uses the `.env.example` file as a manifest for which variables are needed. If your project has a `.env.example` it already supports envful 🚀.
 
 Check for variables and undeclared variables using `check`:
 
@@ -32,10 +32,12 @@ Check for variables and undeclared variables using `check`:
 envful check
 ```
 
-You can also specify a command using the '--' separator. It will immediately fail if a variable is missing, showing helpful messages.
+You can also specify a command to run if check is successful using the '--' separator. It will immediately fail if a variable is missing, showing helpful messages.
 
 ```bash
 envful -- echo "I am envful!"
+
+envful -- npm run dev
 ```
 
 ```
@@ -54,7 +56,7 @@ SUBCOMMANDS:
 
 ## How to declare variables
 
-Inside your`.env.example` file, you can declare the variables that your process requires. You can use the triple # to add a comment to the variable.
+Inside your `.env.example` file, you can declare the variables that your application requires. You can use the triple # to add a comment to the variable.
 
 Example:
 
