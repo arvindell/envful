@@ -1,6 +1,6 @@
 # Envful
 
-Envful is a CLI tool that verifies the presence of environment variables before running a process.
+Envful is a CLI tool that verifies the presence of environment variables before running a process. It looks for `.env` files and if not found there, it searches in your system environment.
 
 <!-- Add image -->
 
@@ -32,7 +32,7 @@ Check for variables and undeclared variables using `check`:
 envful check
 ```
 
-You can also specify a command using the '--' separator. It will immediately fail if a variable is missing, showing helful messages.
+You can also specify a command using the '--' separator. It will immediately fail if a variable is missing, showing helpful messages.
 
 ```bash
 envful -- echo "I am envful!"
