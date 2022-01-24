@@ -1,3 +1,7 @@
+# 0.5.1
+
+- Minor change to error message.
+
 # 0.5.0
 
 - Improved error message for missing `.env.example` file.
