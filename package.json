@@ -1,6 +1,6 @@
 {
   "name": "envful",
-  "version": "0.5.1",
+  "version": "0.5.2",
   "description": "A tool to verify the presence of environment variables before running a process",
   "files": [
     "npm/**/*"
