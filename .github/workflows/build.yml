@@ -36,10 +36,10 @@ jobs:
 
       - name: Cache Mac OS dependencies
         id: cache-macos
-        uses: actions/cache@v1
+        uses: actions/cache@v2
         with:
           path: osxcross
-          key: ${{ runner.os }}-osxcross
+          key: osxcross
 
       - name: Install Mac OS dependencies
         if: steps.cache-macos.outputs.cache-hit != 'true'
