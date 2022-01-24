@@ -34,13 +34,6 @@ jobs:
           cp target/x86_64-pc-windows-gnu/release/envful.exe builds/envful-win64
           tar -C builds -czvf dist/envful-win64.tar.gz envful-win64
 
-      - name: Build Win32
-        run: |
-          cargo rustc --bin envful --release --target=i686-pc-windows-gnu -- -C linker=i686-w64-mingw32-gcc -C link-args=-mwindows -C panic=abort
-          mkdir builds/envful-win32
-          cp target/i686-pc-windows-gnu/release/envful.exe builds/envful-win32
-          tar -C builds -czvf dist/envful-win32.tar.gz envful-win32
-
       - name: Build Linux
         run: |
           cargo rustc --bin envful --release --target=x86_64-unknown-linux-gnu
@@ -82,7 +75,6 @@ jobs:
           body_path: CHANGELOG.md
           files: |
             dist/envful-win64.tar.gz
-            dist/envful-win32.tar.gz
             dist/envful-linux.tar.gz
             dist/envful-macos.tar.gz
         env:
