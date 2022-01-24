@@ -12,33 +12,48 @@ pub fn check_command(dir: &PathBuf, show_undeclared: bool, silent: bool) {
     let manifest_path = dir.clone().join(".env.example");
     let env_file_path = dir.clone().join(".env");
     let declared_vars: Vec<EnvVarDeclaration> = parse_manifest_file(&manifest_path);
-    // Get name of vars from EnvVar vector
-    let given_vars = parse_env_file(&env_file_path)
+
+    // Get given vars from .env file
+    let mut given_vars = parse_env_file(&env_file_path)
         .iter()
-        .map(|x| x.name.clone())
+        .map(|var| var.name.clone())
+        // Remove empty vars
+        .filter(|n| !n.is_empty())
         .collect::<Vec<String>>();
-    println!("Given vars: {:?}", &given_vars);
-    // Get missing vars from config
+
+    // Push to given vars the ones set in the system env
+    let system_vars: Vec<String> = std::env::vars()
+        .filter(|(key, _value)| {
+            declared_vars
+                .iter()
+                .map(|x| x.name.clone())
+                .collect::<Vec<String>>()
+                .contains(key)
+        })
+        .map(|(key, _value)| key)
+        .collect();
+    given_vars.extend(system_vars);
+
     let required_missing_vars: Vec<String> = declared_vars
         .iter()
-        .filter(|x| !x.optional && !given_vars.contains(&x.name))
-        .map(|x| x.name.clone())
+        .filter(|v| !v.optional && !given_vars.contains(&v.name))
+        .map(|v| v.name.clone())
         .collect();
     let optional_missing_vars: Vec<String> = declared_vars
         .iter()
-        .filter(|x| x.optional && !given_vars.contains(&x.name))
-        .map(|x| x.name.clone())
+        .filter(|v| v.optional && !given_vars.contains(&v.name))
+        .map(|v| v.name.clone())
         .collect();
     let undeclared_vars: Vec<String> = given_vars
         .iter()
-        .filter(|var| {
+        .filter(|v| {
             !declared_vars
                 .iter()
                 .map(|dec_var| dec_var.name.clone())
                 .collect::<Vec<String>>()
-                .contains(var)
+                .contains(v)
         })
-        .map(|var| var.clone())
+        .map(|v| v.clone())
         .collect();
     let error = required_missing_vars.len() > 0;
 
