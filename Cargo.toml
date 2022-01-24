@@ -12,8 +12,6 @@ keywords = ["cli", "env", "envful"]
 categories = ["command-line-utilities"]
 
 [dependencies]
-serde = { version = "1.0.104", features = ["derive"] }
-serde_json = "1.0.48"
 colored = "2"
 clap = { version = "3.0.10", features = ["derive"] }
 

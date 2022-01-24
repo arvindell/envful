@@ -7,7 +7,7 @@ use std::path::PathBuf;
 #[derive(Parser, Debug)]
 #[clap(version, about, long_about = None)]
 struct Args {
-    /// Directory to look for envful.json
+    /// Directory to look for .env and .env.example files
     #[clap(short, long, parse(from_os_str), global = true)]
     dir: Option<PathBuf>,
 

@@ -45,7 +45,7 @@ USAGE:
     envful [OPTIONS] <SUBCOMMAND>
 
 OPTIONS:
-    -d, --dir <DIR>    Directory to look for envful.json
+    -d, --dir <DIR>    Directory to look for .env and .env.example files
     -h, --help         Print help information
     -V, --version      Print version information
 

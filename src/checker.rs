@@ -1,7 +1,6 @@
 use crate::EnvVar;
-use crate::Envful;
+use crate::EnvVarDeclaration;
 use colored::*;
-use serde_json;
 use std::fs;
 use std::path::PathBuf;
 
@@ -10,27 +9,38 @@ pub fn check_command(dir: &PathBuf, show_undeclared: bool, silent: bool) {
         println!("{}", "Checking env vars...".cyan());
     }
 
-    let manifest_path = dir.clone().join("envful.json");
+    let manifest_path = dir.clone().join(".env.example");
     let env_file_path = dir.clone().join(".env");
-    let config: Envful = get_config(&manifest_path);
+    let declared_vars: Vec<EnvVarDeclaration> = parse_manifest_file(&manifest_path);
     // Get name of vars from EnvVar vector
     let given_vars = parse_env_file(&env_file_path)
         .iter()
         .map(|x| x.name.clone())
         .collect::<Vec<String>>();
+    println!("Given vars: {:?}", &given_vars);
     // Get missing vars from config
-    let missing_vars: Vec<String> = config
-        .variables
+    let required_missing_vars: Vec<String> = declared_vars
         .iter()
-        .filter(|x| !given_vars.contains(x))
-        .map(|x| x.clone())
+        .filter(|x| !x.optional && !given_vars.contains(&x.name))
+        .map(|x| x.name.clone())
+        .collect();
+    let optional_missing_vars: Vec<String> = declared_vars
+        .iter()
+        .filter(|x| x.optional && !given_vars.contains(&x.name))
+        .map(|x| x.name.clone())
         .collect();
     let undeclared_vars: Vec<String> = given_vars
         .iter()
-        .filter(|x| !config.variables.contains(x))
-        .map(|x| x.clone())
+        .filter(|var| {
+            !declared_vars
+                .iter()
+                .map(|dec_var| dec_var.name.clone())
+                .collect::<Vec<String>>()
+                .contains(var)
+        })
+        .map(|var| var.clone())
         .collect();
-    let error = missing_vars.len() > 0;
+    let error = required_missing_vars.len() > 0;
 
     if show_undeclared {
         if undeclared_vars.len() > 0 {
@@ -50,13 +60,24 @@ pub fn check_command(dir: &PathBuf, show_undeclared: bool, silent: bool) {
         }
     }
 
+    if optional_missing_vars.len() > 0 {
+        println!("{}", "Some optional variables are missing:".yellow().bold());
+        for optional_var in optional_missing_vars {
+            println!(
+                "{} {}",
+                " Undeclared optional variable:".yellow(),
+                optional_var.yellow()
+            );
+        }
+    }
+
     if error {
         // Print message for every missing var
         eprintln!(
             "{}",
             "The process is missing environment variables:".red().bold()
         );
-        for missing_var in missing_vars {
+        for missing_var in required_missing_vars {
             eprintln!(
                 "{} {}",
                 "❌ Missing variable:".yellow(),
@@ -66,26 +87,63 @@ pub fn check_command(dir: &PathBuf, show_undeclared: bool, silent: bool) {
         // Exit with error code
         std::process::exit(1);
     }
+
     if !silent {
         println!("{}", "All variables are present ✅".green());
     }
 }
 
-fn get_config(path: &PathBuf) -> Envful {
-    let contents = fs::read_to_string(path);
+fn parse_manifest_file(path: &PathBuf) -> Vec<EnvVarDeclaration> {
+    let content = fs::read_to_string(path).expect(".env.example file not found");
+    let lines: Vec<&str> = content.split("\n").collect();
 
-    if contents.is_ok() {
-        let contents = contents.unwrap();
-        let config: Envful = serde_json::from_str(contents.as_str()).unwrap();
-        return config;
-    } else {
-        eprintln!("Envful manifest not found in {}", path.display());
-        std::process::exit(1);
+    let mut env_vars: Vec<EnvVarDeclaration> = Vec::new();
+
+    // Iterate variables
+    for line in lines {
+        // If line is empty, skip
+        if line.is_empty() {
+            continue;
+        }
+
+        let mut optional = false;
+        let mut description: Option<String> = None;
+        // Get variable description
+        let comment_marker = "###";
+        if line.starts_with(comment_marker) {
+            description = Some(line.replace(comment_marker, ""));
+            if description.clone().unwrap().contains("optional") {
+                optional = true;
+            }
+        }
+
+        // If line starts with #, skip
+        if line.starts_with("#") {
+            continue;
+        }
+
+        // Convert to String vector
+        let var_string: Vec<String> = line.split("=").map(|x| x.to_string()).collect();
+        // Check key
+        let name = var_string.get(0);
+        if name.is_none() {
+            panic!("Name is not present in the line: {}", line);
+        }
+        let name = parse_token(name.unwrap());
+        // Check value
+
+        env_vars.push(EnvVarDeclaration {
+            name,
+            optional,
+            default: None,
+            description,
+        });
     }
+    return env_vars;
 }
 
 fn parse_env_file(path: &PathBuf) -> Vec<EnvVar> {
-    let content = fs::read_to_string(path).expect("env file not found");
+    let content = fs::read_to_string(path).expect(".env file not found");
     let lines: Vec<&str> = content.split("\n").collect();
 
     let mut env_vars: Vec<EnvVar> = Vec::new();
@@ -98,7 +156,7 @@ fn parse_env_file(path: &PathBuf) -> Vec<EnvVar> {
         }
 
         // Get variable description
-        if line.starts_with("#!") {
+        if line.starts_with("###") {
             let chars = line.split("#!").collect::<Vec<&str>>();
             let _description = chars.last().unwrap();
         }
@@ -111,41 +169,22 @@ fn parse_env_file(path: &PathBuf) -> Vec<EnvVar> {
         // Convert to String vector
         let var_string: Vec<String> = line.split("=").map(|x| x.to_string()).collect();
         // Check key
-        let key = var_string.get(0);
-        if key.is_none() {
-            eprintln!("Name is not present");
-            std::process::exit(1);
-        }
-        let key = parse_token(key.unwrap());
-        // Check value
-
-        let value = var_string.get(1);
-        if value.is_none() {
-            eprintln!("Name is not present");
-            std::process::exit(1);
-        }
-        let value = parse_token(value.unwrap());
-
-        if value.is_empty() {
-            eprintln!(
-                "{}",
-                format!(
-                    "Value for variable {} is empty, please verify your .env file",
-                    key
-                )
-                .red()
-                .bold()
-            );
-            std::process::exit(1);
+        let name = var_string.get(0);
+        if name.is_none() {
+            panic!("Name is not present in the line: {}", line);
         }
 
-        env_vars.push(EnvVar {
-            name: key,
-            value: value,
-            required: true,
-            default: None,
-            description: None,
-        });
+        // If keys not there, skip
+        if name.unwrap().is_empty() {
+            continue;
+        }
+
+        let name = parse_token(name.unwrap());
+        let value = var_string.get(1).cloned();
+
+        // Convert value to owned
+        let value = value.clone();
+        env_vars.push(EnvVar { name, value });
     }
     return env_vars;
 }

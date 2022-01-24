@@ -14,8 +14,8 @@ mod check_spec {
     }
 
     #[test]
-    fn fails_if_malformed() -> Result<(), Box<dyn std::error::Error>> {
-        run_check("malformed", false, "Missing")
+    fn warns_on_undeclared() -> Result<(), Box<dyn std::error::Error>> {
+        run_check("undeclared", true, "not declared")
     }
 
     fn run_check(
