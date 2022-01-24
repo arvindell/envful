@@ -91,4 +91,4 @@ jobs:
           CARGO_ACCESS_TOKEN: ${{ secrets.CARGO_ACCESS_TOKEN }}
         run: |
           cargo login "$CARGO_ACCESS_TOKEN"
-          cargo publish
+          cargo publish --allow-dirty
