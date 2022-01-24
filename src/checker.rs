@@ -44,7 +44,6 @@ pub fn check_command(dir: &PathBuf, show_undeclared: bool, silent: bool) {
         .filter(|v| v.optional && !given_vars.contains(&v.name))
         .map(|v| v.name.clone())
         .collect();
-    println!("{}", optional_missing_vars.join("\n"));
     let undeclared_vars: Vec<String> = given_vars
         .iter()
         .filter(|v| {
