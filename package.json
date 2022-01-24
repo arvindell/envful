@@ -22,5 +22,8 @@
   "bugs": {
     "url": "https://github.com/arvindell/envful/issues"
   },
-  "homepage": "https://github.com/arvindell/envful#readme"
+  "homepage": "https://github.com/arvindell/envful#readme",
+  "dependencies": {
+    "binary-install": "^0.1.1"
+  }
 }
