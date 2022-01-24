@@ -7,18 +7,18 @@ use std::path::PathBuf;
 #[derive(Parser, Debug)]
 #[clap(version, about, long_about = None)]
 struct Args {
-    /// Directory to look for .env and .env.example files
+    /// Directory to look for .env and .env.example files. Defaults to current directory.
     #[clap(short, long, parse(from_os_str), global = true)]
     dir: Option<PathBuf>,
 
-    /// Command to execute
+    /// Command to execute if successful
     #[clap(subcommand)]
     command: Commands,
 }
 
 #[derive(Subcommand, Debug)]
 enum Commands {
-    /// Check if the .env has all required variables and warns if missing
+    /// Check if env has all required variables and warns if missing
     Check,
     #[clap(external_subcommand)]
     Other(Vec<String>),
