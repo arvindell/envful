@@ -19,7 +19,7 @@ function getBinary() {
   const version = require("../package.json").version;
   const url = `https://github.com/arvindell/envful/releases/download/v${version}/envful-${platform}.tar.gz`;
   const name = "envful";
-  return new Binary(name, url);
+  return new Binary(platform.startsWith("win") ? `${name}.exe` : name, url);
 }
 
 module.exports = getBinary;
