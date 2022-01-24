@@ -2,7 +2,8 @@
 
 Envful is a CLI tool that verifies the presence of environment variables. It looks inside your [.env](https://www.npmjs.com/package/dotenv) file and system environment.
 
-<!-- Add image -->
+<img width="577" alt="Screen Shot 2022-01-23 at 7 48 05 p m" src="https://user-images.githubusercontent.com/29064411/150709280-7e2367f2-22ea-419a-83fd-812fab9c60ee.png">
+
 
 ## Installation
 
