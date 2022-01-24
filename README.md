@@ -59,7 +59,7 @@ SUBCOMMANDS:
 
 ## How to declare variables
 
-Inside your `.env.example` file, you can declare the variables that your application requires. You can use the triple # to add a comment to the variable.
+Inside your `.env.example` file, you can declare the variables that your application requires. You can use the triple hash market (`###`) to add a description to the variable. Add `[optional]` to a variable for warning instead of failing.
 
 Example:
 
@@ -69,6 +69,4 @@ DATABASE_URL=postgres://postgres:postgres@localhost:5432/postgres
 
 ### The app secret used to sign JSON Web Tokens
 APP_SECRET=
-
-
 ```
