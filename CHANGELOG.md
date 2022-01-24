@@ -1,3 +1,7 @@
+# 0.5.4
+
+- Fix issue when running in Windows.
+
 # 0.5.3
 
 - Improve support for Apple Silicon.
