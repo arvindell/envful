@@ -6,3 +6,5 @@
 .npmrc
 
 node_modules
+
+osxcross
