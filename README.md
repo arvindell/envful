@@ -62,7 +62,7 @@ Example:
 
 ```bash
 ### The URL to the database instance [required]
-DATABASE_URL=mysql://user:pass@host:port/db
+DATABASE_URL=postgres://postgres:postgres@localhost:5432/postgres
 
 ### The app secret used to sign JSON Web Tokens
 APP_SECRET=
