@@ -116,7 +116,7 @@ fn parse_manifest_file(path: &PathBuf) -> Vec<EnvVarDeclaration> {
     if content.is_err() {
         eprintln!(
             "{}",
-            "Could not find .env.example manifest file. If it is not in current dir, use the -d option."
+            "Could not find .env.example manifest file. If it is not in the working dir, use the -d option."
                 .red()
                 .bold()
         );
