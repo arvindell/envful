@@ -111,7 +111,19 @@ pub fn check_command(dir: &PathBuf, show_undeclared: bool, silent: bool) {
 }
 
 fn parse_manifest_file(path: &PathBuf) -> Vec<EnvVarDeclaration> {
-    let content = fs::read_to_string(path).expect(".env.example file not found");
+    let content = fs::read_to_string(path);
+
+    if content.is_err() {
+        eprintln!(
+            "{}",
+            "Could not find .env.example manifest file. If it is not in current dir, use the -d option."
+                .red()
+                .bold()
+        );
+        std::process::exit(1);
+    }
+    let content = content.unwrap();
+
     let lines: Vec<&str> = content.split("\n").collect();
 
     let mut env_vars: Vec<EnvVarDeclaration> = Vec::new();
@@ -160,7 +172,14 @@ fn parse_manifest_file(path: &PathBuf) -> Vec<EnvVarDeclaration> {
 }
 
 fn parse_env_file(path: &PathBuf) -> Vec<EnvVar> {
-    let content = fs::read_to_string(path).expect(".env file not found");
+    let content = fs::read_to_string(path);
+
+    // If file is not found, return empty vector as vars could be set via system
+    if content.is_err() {
+        return Vec::new();
+    }
+
+    let content = content.unwrap();
     let lines: Vec<&str> = content.split("\n").collect();
 
     let mut env_vars: Vec<EnvVar> = Vec::new();
