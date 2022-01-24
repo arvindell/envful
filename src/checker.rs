@@ -127,7 +127,7 @@ fn parse_manifest_file(path: &PathBuf) -> Vec<EnvVarDeclaration> {
         let comment_marker = "###";
         if line.starts_with(comment_marker) {
             description = Some(line.replace(comment_marker, ""));
-            if description.clone().unwrap().contains("optional") {
+            if description.clone().unwrap().contains("[optional]") {
                 optional = true;
             }
         }
