@@ -1,0 +1,103 @@
+name: build
+
+on:
+  push:
+    tags: ["v*.*.*"]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v1
+
+      - name: Run tests
+        run: cargo test --verbose
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get -y install gcc-mingw-w64-x86-64 gcc-mingw-w64-i686
+          rustup target add x86_64-pc-windows-gnu
+          rustup target add i686-pc-windows-gnu
+          rustup target add x86_64-unknown-linux-gnu
+          rustup target add x86_64-apple-darwin
+
+          mkdir dist
+          mkdir builds
+
+      - name: Build Win64
+        run: |
+          cargo rustc --release --target=x86_64-pc-windows-gnu -- -C linker=x86_64-w64-mingw32-gcc
+          mkdir builds/sweep-win64
+          cp target/x86_64-pc-windows-gnu/release/swp.exe builds/sweep-win64
+          tar -C builds -czvf dist/sweep-win64.tar.gz sweep-win64
+
+      - name: Build Win32
+        run: |
+          cargo rustc --release --target=i686-pc-windows-gnu -- -C linker=i686-w64-mingw32-gcc -C link-args=-mwindows -C panic=abort
+          mkdir builds/sweep-win32
+          cp target/i686-pc-windows-gnu/release/swp.exe builds/sweep-win32
+          tar -C builds -czvf dist/sweep-win32.tar.gz sweep-win32
+
+      - name: Build Linux
+        run: |
+          cargo rustc --release --target=x86_64-unknown-linux-gnu
+          mkdir builds/sweep-linux
+          cp target/x86_64-unknown-linux-gnu/release/swp builds/sweep-linux
+          tar -C builds -czvf dist/sweep-linux.tar.gz sweep-linux
+
+      - name: Cache Mac OS dependencies
+        id: cache-macos
+        uses: actions/cache@v1
+        with:
+          path: osxcross
+          key: ${{ runner.os }}-osxcross
+
+      - name: Install Mac OS dependencies
+        if: steps.cache-macos.outputs.cache-hit != 'true'
+        run: |
+          git clone https://github.com/tpoechtrager/osxcross
+          cd osxcross
+          sudo tools/get_dependencies.sh
+          wget -nc https://s3.dockerproject.org/darwin/v2/MacOSX10.10.sdk.tar.xz
+          mv MacOSX10.10.sdk.tar.xz tarballs/
+          UNATTENDED=yes OSX_VERSION_MIN=10.7 ./build.sh
+
+      - name: Build Mac OS
+        run: |
+          export PATH="$(pwd)/osxcross/target/bin:$PATH"
+          export LIBZ_SYS_STATIC=1
+          export CC=o64-clang
+          export CXX=o64-clang++
+          cargo build --release --target "x86_64-apple-darwin"
+          mkdir builds/sweep-macos
+          cp target/x86_64-apple-darwin/release/swp builds/sweep-macos
+          tar -C builds -czvf dist/sweep-macos.tar.gz sweep-macos
+
+      - name: Upload release
+        uses: softprops/action-gh-release@v1
+        with:
+          body_path: CHANGELOG.md
+          files: |
+            dist/sweep-win64.tar.gz
+            dist/sweep-win32.tar.gz
+            dist/sweep-linux.tar.gz
+            dist/sweep-macos.tar.gz
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Publish npm package
+        env:
+          NPM_ACCESS_TOKEN: ${{ secrets.NPM_ACCESS_TOKEN }}
+        run: |
+          echo "//registry.npmjs.org/:_authToken=$NPM_ACCESS_TOKEN" > ".npmrc"
+          npm publish
+
+      - name: Publish cargo package
+        env:
+          CARGO_ACCESS_TOKEN: ${{ secrets.CARGO_ACCESS_TOKEN }}
+        run: |
+          cargo login "$CARGO_ACCESS_TOKEN"
+          cargo publish
