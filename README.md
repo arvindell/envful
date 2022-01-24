@@ -69,3 +69,11 @@ DATABASE_URL=postgres://postgres:postgres@localhost:5432/postgres
 ### The app secret used to sign JSON Web Tokens
 APP_SECRET=
 ```
+
+## Contributions welcome
+
+This project welcomes contributions of any kind, whether you want to add new features, improve the documentation or just want to give some feedback.
+
+## License
+
+Envful is published under the MIT license. See the LICENSE file for more information.
