@@ -1,5 +1,7 @@
 # Envful 🌳
 
+https://img.shields.io/github/workflow/status/arvindell/envful/build?style=flat-square 
+
 Envful is a CLI tool that verifies the presence of environment variables. It looks inside your [.env](https://www.npmjs.com/package/dotenv) file and the host system. You can use it to run any process while ensuring all the variables are set.
 
 Never again waste time debugging your app because of a misconfigured environment.
