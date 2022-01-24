@@ -2,3 +2,5 @@
 
 /builds
 /dist
+
+.npmrc
