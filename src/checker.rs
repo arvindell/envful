@@ -16,9 +16,9 @@ pub fn check_command(dir: &PathBuf, show_undeclared: bool, silent: bool) {
     // Get given vars from .env file
     let mut given_vars = parse_env_file(&env_file_path)
         .iter()
-        .map(|var| var.name.clone())
         // Remove empty vars
-        .filter(|n| !n.is_empty())
+        .filter(|var| !var.value.is_none() && !var.value.as_ref().unwrap().is_empty())
+        .map(|var| var.name.clone())
         .collect::<Vec<String>>();
 
     // Push to given vars the ones set in the system env
