@@ -1,3 +1,7 @@
+# 0.5.3
+
+- Improve support for Apple Silicon.
+
 # 0.5.2
 
 - Optional variable warning are now only shown with the `check` command.
