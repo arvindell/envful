@@ -65,11 +65,14 @@ Inside your `.env.example` file, you can declare the variables that your applica
 Example:
 
 ```bash
-### The URL to the database instance [required]
-DATABASE_URL=postgres://postgres:postgres@localhost:5432/postgres
+### The URL to the database instance
+DATABASE_URL=
 
 ### The app secret used to sign JSON Web Tokens
 APP_SECRET=
+
+### Google Analytics ID [optional]
+GA_ID=
 ```
 
 ## Contributions welcome
