@@ -6,8 +6,9 @@ authors = ["Alex Vilchis <alex@quentli.com>"]
 license = "MIT"
 description = "A tool to verify the presence of environment variables before running a process"
 readme = "README.md"
-# homepage = "https://github.com/you/grrs"
-# repository = "https://github.com/you/grrs"
+homepage = "https://github.com/arvindell/envful"
+repository = "https://github.com/arvindell/envful"
+documentation = "https://github.com/arvindell/envful"
 keywords = ["cli", "env", "envful"]
 categories = ["command-line-utilities"]
 
