@@ -1,6 +1,7 @@
 pub mod checker;
 pub mod runner;
 
+#[derive(Debug)]
 pub struct EnvVarDeclaration {
     pub name: String,
     pub optional: bool,

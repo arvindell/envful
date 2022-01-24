@@ -44,6 +44,7 @@ pub fn check_command(dir: &PathBuf, show_undeclared: bool, silent: bool) {
         .filter(|v| v.optional && !given_vars.contains(&v.name))
         .map(|v| v.name.clone())
         .collect();
+    println!("{}", optional_missing_vars.join("\n"));
     let undeclared_vars: Vec<String> = given_vars
         .iter()
         .filter(|v| {
@@ -80,7 +81,7 @@ pub fn check_command(dir: &PathBuf, show_undeclared: bool, silent: bool) {
         for optional_var in optional_missing_vars {
             println!(
                 "{} {}",
-                " Undeclared optional variable:".yellow(),
+                " Missing optional variable:".yellow(),
                 optional_var.yellow()
             );
         }
@@ -90,7 +91,9 @@ pub fn check_command(dir: &PathBuf, show_undeclared: bool, silent: bool) {
         // Print message for every missing var
         eprintln!(
             "{}",
-            "The process is missing environment variables:".red().bold()
+            "The process is missing required environment variables:"
+                .red()
+                .bold()
         );
         for missing_var in required_missing_vars {
             eprintln!(
@@ -115,13 +118,13 @@ fn parse_manifest_file(path: &PathBuf) -> Vec<EnvVarDeclaration> {
     let mut env_vars: Vec<EnvVarDeclaration> = Vec::new();
 
     // Iterate variables
+    let mut optional = false;
     for line in lines {
         // If line is empty, skip
         if line.is_empty() {
             continue;
         }
 
-        let mut optional = false;
         let mut description: Option<String> = None;
         // Get variable description
         let comment_marker = "###";

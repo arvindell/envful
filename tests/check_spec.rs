@@ -17,6 +17,15 @@ mod check_spec {
     fn warns_on_undeclared() -> Result<(), Box<dyn std::error::Error>> {
         run_check("undeclared", true, "not declared", None)
     }
+    #[test]
+    fn warns_on_optional_missing() -> Result<(), Box<dyn std::error::Error>> {
+        run_check(
+            "optional_missing",
+            true,
+            "Some optional variables are missing",
+            None,
+        )
+    }
 
     #[test]
     fn succeeds_if_found_in_env() -> Result<(), Box<dyn std::error::Error>> {
