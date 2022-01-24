@@ -6,7 +6,7 @@ use std::path::PathBuf;
 
 pub fn check_command(dir: &PathBuf, show_undeclared: bool, silent: bool) {
     if !silent {
-        println!("{}", "Checking env vars...".cyan());
+        println!("{}", "Checking environment...".cyan());
     }
 
     let manifest_path = dir.clone().join(".env.example");
@@ -75,7 +75,7 @@ pub fn check_command(dir: &PathBuf, show_undeclared: bool, silent: bool) {
         }
     }
 
-    if optional_missing_vars.len() > 0 {
+    if optional_missing_vars.len() > 0 && !silent {
         println!("{}", "Some optional variables are missing:".yellow().bold());
         for optional_var in optional_missing_vars {
             println!(
