@@ -31,21 +31,21 @@ jobs:
         run: |
           cargo rustc --bin envful --release --target=x86_64-pc-windows-gnu -- -C linker=x86_64-w64-mingw32-gcc
           mkdir builds/envful-win64
-          cp target/x86_64-pc-windows-gnu/release/swp.exe builds/envful-win64
+          cp target/x86_64-pc-windows-gnu/release/envful.exe builds/envful-win64
           tar -C builds -czvf dist/envful-win64.tar.gz envful-win64
 
       - name: Build Win32
         run: |
           cargo rustc --bin envful --release --target=i686-pc-windows-gnu -- -C linker=i686-w64-mingw32-gcc -C link-args=-mwindows -C panic=abort
           mkdir builds/envful-win32
-          cp target/i686-pc-windows-gnu/release/swp.exe builds/envful-win32
+          cp target/i686-pc-windows-gnu/release/envful.exe builds/envful-win32
           tar -C builds -czvf dist/envful-win32.tar.gz envful-win32
 
       - name: Build Linux
         run: |
           cargo rustc --bin envful --release --target=x86_64-unknown-linux-gnu
           mkdir builds/envful-linux
-          cp target/x86_64-unknown-linux-gnu/release/swp builds/envful-linux
+          cp target/x86_64-unknown-linux-gnu/release/envful builds/envful-linux
           tar -C builds -czvf dist/envful-linux.tar.gz envful-linux
 
       - name: Cache Mac OS dependencies
@@ -58,7 +58,7 @@ jobs:
       - name: Install Mac OS dependencies
         if: steps.cache-macos.outputs.cache-hit != 'true'
         run: |
-          git clone https://github.com/tpoechtrager/osxcross
+          git clone https://github.com/arvindell/envful
           cd osxcross
           sudo tools/get_dependencies.sh
           wget -nc https://s3.dockerproject.org/darwin/v2/MacOSX10.10.sdk.tar.xz
@@ -73,7 +73,7 @@ jobs:
           export CXX=o64-clang++
           cargo build --release --target "x86_64-apple-darwin"
           mkdir builds/envful-macos
-          cp target/x86_64-apple-darwin/release/swp builds/envful-macos
+          cp target/x86_64-apple-darwin/release/envful builds/envful-macos
           tar -C builds -czvf dist/envful-macos.tar.gz envful-macos
 
       - name: Upload release
