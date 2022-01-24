@@ -41,34 +41,6 @@ jobs:
           cp target/x86_64-unknown-linux-gnu/release/envful builds/envful-linux
           tar -C builds -czvf dist/envful-linux.tar.gz envful-linux
 
-      - name: Install Mac OS dependencies
-        if: steps.cache-macos.outputs.cache-hit != 'true'
-        run: |
-          git clone https://github.com/tpoechtrager/osxcross
-          cd osxcross
-          sudo tools/get_dependencies.sh
-          wget -nc https://s3.dockerproject.org/darwin/v2/MacOSX10.10.sdk.tar.xz
-          mv MacOSX10.10.sdk.tar.xz tarballs/
-          UNATTENDED=yes OSX_VERSION_MIN=10.7 ./build.sh
-
-      - name: Cache Mac OS dependencies
-        id: cache-macos
-        uses: actions/cache@v1
-        with:
-          path: osxcross
-          key: ${{ runner.os }}-osxcross
-
-      - name: Build Mac OS
-        run: |
-          export PATH="$(pwd)/osxcross/target/bin:$PATH"
-          export LIBZ_SYS_STATIC=1
-          export CC=o64-clang
-          export CXX=o64-clang++
-          cargo build --release --target "x86_64-apple-darwin"
-          mkdir builds/envful-macos
-          cp target/x86_64-apple-darwin/release/envful builds/envful-macos
-          tar -C builds -czvf dist/envful-macos.tar.gz envful-macos
-
       - name: Upload release
         uses: softprops/action-gh-release@v1
         with:
