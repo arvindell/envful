@@ -1,3 +1,8 @@
+# 0.5.5
+
+- Fix optional variable comment parsing.
+
+
 # 0.5.4
 
 - Fix issue when running in Windows.
