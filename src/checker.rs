@@ -4,7 +4,12 @@ use colored::*;
 use std::fs;
 use std::path::PathBuf;
 
-pub fn check_command(dir: &PathBuf, show_undeclared: bool, silent: bool) {
+pub fn check_command(
+    dir: &PathBuf,
+    silent: bool,
+    show_undeclared: bool,
+    show_missing_optional: bool,
+) {
     if !silent {
         println!("{}", "Checking environment...".cyan());
     }
@@ -75,7 +80,7 @@ pub fn check_command(dir: &PathBuf, show_undeclared: bool, silent: bool) {
         }
     }
 
-    if optional_missing_vars.len() > 0 && !silent {
+    if optional_missing_vars.len() > 0 && show_missing_optional {
         println!("{}", "Some optional variables are missing:".yellow().bold());
         for optional_var in optional_missing_vars {
             println!(

@@ -2,8 +2,13 @@ use crate::checker;
 use std::path::PathBuf;
 use std::process::Command;
 
-pub fn run_command(dir: &PathBuf, command: &Vec<String>) {
-    checker::check_command(dir, false, true);
+pub fn run_command(
+    dir: &PathBuf,
+    command: &Vec<String>,
+    show_undeclared: bool,
+    show_missing_optional: bool,
+) {
+    checker::check_command(dir, false, show_undeclared, show_missing_optional);
     // Run the command with the given args
     let binary = command.get(0).unwrap();
     let other_args = command
