@@ -30,7 +30,6 @@ mod check_spec {
     #[test]
     fn succeeds_if_found_in_env() -> Result<(), Box<dyn std::error::Error>> {
         // Set SENGRID_API_KEY in env
-
         let env_vars = vec![("SENDGRID_API_KEY", "12345")];
         let result = run_check(
             "missing_but_in_env",
@@ -38,9 +37,19 @@ mod check_spec {
             "All variables are present",
             Some(env_vars),
         );
-        // Clear SENGRID_API_KEY from env
-
         result
+    }
+
+    #[test]
+    fn displays_correct_optional() -> Result<(), Box<dyn std::error::Error>> {
+        let mut cmd = Command::cargo_bin("envful")?;
+        let dir = format!("tests/fixtures/{}", "two_optional");
+        cmd.args(["check", "-d", dir.as_str()]);
+
+        let has_first = predicate::str::contains("Missing optional variable: SENDGRID_API_KEY");
+        let has_second = predicate::str::contains("Missing optional variable: STRIPE_SK");
+        cmd.assert().success().stdout(has_first).stdout(has_second);
+        Ok(())
     }
 
     fn run_check(
