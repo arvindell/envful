@@ -124,7 +124,7 @@ fn parse_manifest_file(path: &PathBuf) -> Vec<EnvVarDeclaration> {
     }
     let content = content.unwrap();
 
-    let lines: Vec<&str> = content.split("\n").collect();
+    let lines: Vec<&str> = content.lines().collect();
 
     let mut env_vars: Vec<EnvVarDeclaration> = Vec::new();
 
@@ -180,7 +180,7 @@ fn parse_env_file(path: &PathBuf) -> Vec<EnvVar> {
     }
 
     let content = content.unwrap();
-    let lines: Vec<&str> = content.split("\n").collect();
+    let lines: Vec<&str> = content.lines().collect();
 
     let mut env_vars: Vec<EnvVar> = Vec::new();
 
