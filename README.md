@@ -1,4 +1,4 @@
-# Envful 🌳
+# Envful
 
 <a href="https://github.com/arvindell/envful/actions/workflows/build.yml"><img alt="GitHub Workflow Status" src="https://img.shields.io/github/workflow/status/arvindell/envful/build?style=flat-square"></a>  <a href="https://www.npmjs.com/package/envful"><img alt="npm" src="https://img.shields.io/npm/v/envful?style=flat-square"></a> <a href="https://crates.io/crates/envful"><img alt="Crates.io" src="https://img.shields.io/crates/v/envful?style=flat-square"></a>
 

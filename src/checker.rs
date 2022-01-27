@@ -130,13 +130,14 @@ fn parse_manifest_file(path: &PathBuf) -> Vec<EnvVarDeclaration> {
 
     // Iterate variables
     let mut optional = false;
+    let mut description: Option<String> = None;
     for line in lines {
         // If line is empty, skip
         if line.is_empty() {
             continue;
         }
 
-        let mut description: Option<String> = None;
+        description = None;
         // Get variable description
         let comment_marker = "###";
         if line.starts_with(comment_marker) {
@@ -144,6 +145,7 @@ fn parse_manifest_file(path: &PathBuf) -> Vec<EnvVarDeclaration> {
             if description.clone().unwrap().contains("[optional]") {
                 optional = true;
             }
+            continue;
         }
 
         // If line starts with #, skip
@@ -167,6 +169,10 @@ fn parse_manifest_file(path: &PathBuf) -> Vec<EnvVarDeclaration> {
             default: None,
             description,
         });
+
+        // Clean cursor variables
+        optional = false;
+        description = None;
     }
     return env_vars;
 }
