@@ -15,6 +15,7 @@ categories = ["command-line-utilities"]
 [dependencies]
 colored = "2"
 clap = { version = "3.0.10", features = ["derive"] }
+which = "4.2.4"
 
 [dev-dependencies]
 assert_cmd = "2.0"
