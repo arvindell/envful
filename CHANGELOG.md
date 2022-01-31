@@ -1,3 +1,1 @@
-# 0.5.6
-
-- Fix parsing of lines in Windows.
+- Improve program path resolving with the `which` crate.
