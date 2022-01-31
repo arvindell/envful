@@ -12,10 +12,14 @@ Never again waste time debugging your app because of a misconfigured environment
 
 ### NPM
 
-You can install Envful using NPM, allowing you to run it from your project's scripts.
+You can install Envful using NPM.
 
 ```bash
+# Install locally
 npm install envful
+
+# Or globally
+npm install -g envful
 ```
 
 ### crates.io
@@ -36,13 +40,23 @@ Check for variables and undeclared variables using `check`:
 envful check
 ```
 
-You can also specify a command to run if check is successful using the '--' separator. It will immediately fail if a variable is missing, showing helpful messages.
+You can also specify a command to run if check is successful using the '--' separator. It will immediately fail if a variable is missing, showing a helpful message.
 
 ```bash
 envful -- echo "I am envful!"
-
-envful -- npm run dev
 ```
+
+This becomes very useful to check the environment inside `package.json` scripts:
+
+
+```json
+"scripts": {
+    "dev": "envful -- next",
+    "build": "envful -- next build"
+}
+```
+
+### Arguments
 
 ```
 USAGE:
