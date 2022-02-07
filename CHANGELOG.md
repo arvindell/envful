@@ -1,1 +1,1 @@
-- Test setting version in release files.
+- Fix release file upload.
