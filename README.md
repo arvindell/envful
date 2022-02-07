@@ -1,6 +1,6 @@
 # Envful
 
-<a href="https://github.com/arvindell/envful/actions/workflows/build.yml"><img alt="GitHub Workflow Status" src="https://img.shields.io/github/workflow/status/arvindell/envful/build?style=flat-square"></a>  <a href="https://www.npmjs.com/package/envful"><img alt="npm" src="https://img.shields.io/npm/v/envful?style=flat-square"></a> <a href="https://crates.io/crates/envful"><img alt="Crates.io" src="https://img.shields.io/crates/v/envful?style=flat-square"></a>
+<a href="https://github.com/arvindell/envful/actions/workflows/build.yml"><img alt="GitHub Workflow Status" src="https://img.shields.io/github/workflow/status/arvindell/envful/build?style=flat-square"></a> <a href="https://www.npmjs.com/package/envful"><img alt="npm" src="https://img.shields.io/npm/v/envful?style=flat-square"></a> <a href="https://crates.io/crates/envful"><img alt="Crates.io" src="https://img.shields.io/crates/v/envful?style=flat-square"></a>
 
 Envful is a CLI tool that verifies the presence of environment variables. It looks inside your [.env](https://www.npmjs.com/package/dotenv) file and the host system. You can use it to run any process while ensuring all the variables are set.
 
@@ -9,6 +9,17 @@ Never again waste time debugging your app because of a misconfigured environment
 <img width="605" alt="Screen Shot 2022-01-23 at 10 13 06 p m" src="https://user-images.githubusercontent.com/29064411/150721003-78752d65-9477-4ace-8987-db6e1cf8ea20.png">
 
 ## Installation
+
+### Installation script
+
+Use the convenience install script that can run on all bash systems. Run the following command in your terminal (git bash for Windows).
+
+```bash
+# Warning: always examine scripts downloaded from the internet before running them locally.
+curl https://raw.githubusercontent.com/arvindell/envful/main/install.sh -o install.sh && bash install.sh
+```
+
+This command can also be used to update your installation.
 
 ### NPM
 
@@ -24,7 +35,7 @@ npm install -g envful
 
 ### crates.io
 
-You can also install directly from crates.io using cargo.
+Install directly from crates.io using cargo.
 
 ```bash
 cargo install envful
@@ -47,7 +58,6 @@ envful -- echo "I am envful!"
 ```
 
 This becomes very useful to check the environment inside `package.json` scripts:
-
 
 ```json
 "scripts": {
