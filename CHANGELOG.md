@@ -1,1 +1,1 @@
-- Improve program path resolving with the `which` crate.
+- Test setting version in release files.
