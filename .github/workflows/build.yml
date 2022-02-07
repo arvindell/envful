@@ -79,9 +79,9 @@ jobs:
         with:
           body_path: CHANGELOG.md
           files: |
-            dist/envful-win64.tar.gz
-            dist/envful-linux.tar.gz
-            dist/envful-macos.tar.gz
+            dist/envful-${GITHUB_REF/refs\/tags\//}-win64.tar.gz
+            dist/envful-${GITHUB_REF/refs\/tags\//}-linux.tar.gz
+            dist/envful-${GITHUB_REF/refs\/tags\//}-macos.tar.gz
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
