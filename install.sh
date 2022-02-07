@@ -16,9 +16,6 @@
 #   -b, --bin-dir
 #     Override the bin installation directory
 #
-#   -a, --arch
-#     Override the architecture identified by the installer
-#
 #   -B, --base-url
 #     Override the base URL used for downloading releases
 
@@ -38,12 +35,9 @@ NO_COLOR="$(tput sgr0 2>/dev/null || printf '')"
 APP_NAME="envful"
 APP_AUTHOR="arvindell"
 
-SUPPORTED_TARGETS="x86_64-unknown-linux-gnu x86_64-unknown-linux-musl \
-                  i686-unknown-linux-musl aarch64-unknown-linux-musl \
-                  arm-unknown-linux-musleabihf x86_64-apple-darwin \
-                  aarch64-apple-darwin x86_64-pc-windows-msvc \
-                  i686-pc-windows-msvc aarch64-pc-windows-msvc \
-                  x86_64-unknown-freebsd"
+SUPPORTED_TARGETS="macos \
+                  linux \
+                  win64"
 
 info() {
   printf '%s\n' "${BOLD}${GREY}>${NO_COLOR} $*"
@@ -156,23 +150,6 @@ setup_package() {
   local sudo="${2-}"
   local bin_dir=$3
 
-  # setup man pages
-  # some systems (like git bash for windows) might not have man installed,
-  # ignore this step for them
-  if has man; then
-    MAN_DIR="$(MANPATH="$(manpath)"; echo "${MANPATH%%:*}")/man1"
-    eval "${sudo}" mkdir -p "${MAN_DIR}"
-    gzip "${untar_dir}/doc/${APP_NAME}.1"
-    eval "${sudo}" cp "${untar_dir}/doc/${APP_NAME}.1.gz" "${MAN_DIR}/"
-  fi
-
-  # setup completions files and other docs
-  DOC_DIR="/usr/share/doc/${APP_NAME}"
-  eval "${sudo}" mkdir -p "$DOC_DIR"
-  eval "${sudo}" cp "${untar_dir}/README.md" "${DOC_DIR}/"
-  eval "${sudo}" cp "${untar_dir}/LICENSE" "${DOC_DIR}/"
-  eval "${sudo}" cp "${untar_dir}/complete/"* "${DOC_DIR}/"
-
   # add main executable to $PATH
   if [ -f "${untar_dir}/${APP_NAME}.exe" ]
     # we are on windows, so we copy the exe executable
@@ -238,52 +215,17 @@ detect_platform() {
   platform="$(uname -s | tr '[:upper:]' '[:lower:]')"
 
   case "${platform}" in
-    msys_nt*) platform="pc-windows-msvc" ;;
-    cygwin_nt*) platform="pc-windows-msvc";;
+    msys_nt*) platform="win64" ;;
+    cygwin_nt*) platform="win64";;
     # mingw is Git-Bash
-    mingw*) platform="pc-windows-msvc" ;;
+    mingw*) platform="win64" ;;
     # use the statically compiled musl bins on linux to avoid linking issues.
-    linux) platform="unknown-linux-musl" ;;
-    darwin) platform="apple-darwin" ;;
-    freebsd) platform="unknown-freebsd" ;;
+    darwin) platform="macos" ;;
+    linux) platform="linux" ;;
+    freebsd) platform="linux" ;;
   esac
 
   printf '%s' "${platform}"
-}
-
-# Currently supporting:
-#   - x86_64
-#   - i386
-detect_arch() {
-  local arch
-  arch="$(uname -m | tr '[:upper:]' '[:lower:]')"
-
-  case "${arch}" in
-    amd64) arch="x86_64" ;;
-    armv*) arch="arm" ;;
-    arm64) arch="aarch64" ;;
-  esac
-
-  # `uname -m` in some cases mis-reports 32-bit OS as 64-bit, so double check
-  if [ "${arch}" = "x86_64" ] && [ "$(getconf LONG_BIT)" -eq 32 ]; then
-    arch=i686
-  elif [ "${arch}" = "aarch64" ] && [ "$(getconf LONG_BIT)" -eq 32 ]; then
-    arch=arm
-  fi
-
-  printf '%s' "${arch}"
-}
-
-detect_target() {
-  local arch="$1"
-  local platform="$2"
-  local target="$arch-$platform"
-
-  if [ "${target}" = "arm-unknown-linux-musl" ]; then
-    target="${target}eabihf"
-  fi
-
-  printf '%s' "${target}"
 }
 
 detect_version() {
@@ -338,9 +280,8 @@ check_bin_dir() {
 }
 
 is_build_available() {
-  local arch="$1"
-  local platform="$2"
-  local target="$3"
+  local platform="$1"
+  local target="$2"
 
   local good
 
@@ -355,7 +296,7 @@ is_build_available() {
   )
 
   if [ "${good}" != "1" ]; then
-    error "${arch} builds for ${platform} are not yet available for ${APP_NAME}"
+    error "Builds for ${platform} are not yet available for ${APP_NAME}"
     printf "\n" >&2
     info "If you would like to see a build for your configuration,"
     info "please create an issue requesting a build for ${MAGENTA}${target}${NO_COLOR}:"
@@ -381,10 +322,6 @@ if [ -z "${BIN_DIR-}" ]; then
   fi
 fi
 
-if [ -z "${ARCH-}" ]; then
-  ARCH="$(detect_arch)"
-fi
-
 if [ -z "${BASE_URL-}" ]; then
   BASE_URL="https://github.com/${APP_AUTHOR}/${APP_NAME}/releases"
 fi
@@ -398,10 +335,6 @@ while [ "$#" -gt 0 ]; do
     ;;
   -b | --bin-dir)
     BIN_DIR="$2"
-    shift 2
-    ;;
-  -a | --arch)
-    ARCH="$2"
     shift 2
     ;;
   -B | --base-url)
@@ -426,10 +359,6 @@ while [ "$#" -gt 0 ]; do
     BIN_DIR="${1#*=}"
     shift 1
     ;;
-  -a=* | --arch=*)
-    ARCH="${1#*=}"
-    shift 1
-    ;;
   -B=* | --base-url=*)
     BASE_URL="${1#*=}"
     shift 1
@@ -450,16 +379,15 @@ while [ "$#" -gt 0 ]; do
   esac
 done
 
-TARGET="$(detect_target "${ARCH}" "${PLATFORM}")"
+TARGET="${PLATFORM}"
 
-is_build_available "${ARCH}" "${PLATFORM}" "${TARGET}"
+is_build_available "${PLATFORM}" "${TARGET}"
 
 TARGET="${VERSION}-${TARGET}"
 
 printf "  %s\n" "${UNDERLINE}Configuration${NO_COLOR}"
 info "${BOLD}Bin directory${NO_COLOR}: ${GREEN}${BIN_DIR}${NO_COLOR}"
 info "${BOLD}Platform${NO_COLOR}:      ${GREEN}${PLATFORM}${NO_COLOR}"
-info "${BOLD}Arch${NO_COLOR}:          ${GREEN}${ARCH}${NO_COLOR}"
 info "${BOLD}Version${NO_COLOR}:       ${GREEN}${VERSION}${NO_COLOR}"
 
 # non-empty VERBOSE enables verbose untarring
