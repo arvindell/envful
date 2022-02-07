@@ -1,1 +1,1 @@
-- Fix release file upload.
+- Fix install script.
