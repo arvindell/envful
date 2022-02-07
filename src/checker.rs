@@ -34,10 +34,10 @@ pub fn check_command(dir: &PathBuf, show_undeclared: bool, silent: bool) {
         .collect();
     given_vars.extend(system_vars);
 
-    let required_missing_vars: Vec<String> = declared_vars
+    let required_missing_vars: Vec<_> = declared_vars
         .iter()
         .filter(|v| !v.optional && !given_vars.contains(&v.name))
-        .map(|v| v.name.clone())
+        .map(|v| v.clone())
         .collect();
     let optional_missing_vars: Vec<String> = declared_vars
         .iter()
@@ -96,9 +96,10 @@ pub fn check_command(dir: &PathBuf, show_undeclared: bool, silent: bool) {
         );
         for missing_var in required_missing_vars {
             eprintln!(
-                "{} {}",
+                "{} {} {}",
                 "❌ Missing variable:".yellow(),
-                missing_var.yellow()
+                missing_var.name.yellow(),
+                missing_var.description.unwrap()
             );
         }
         // Exit with error code
