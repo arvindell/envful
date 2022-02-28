@@ -1,3 +1,3 @@
 ## Bug fixes
 
-- Removed a problem preventing using `./.env` as the default environment file.
+- Removed a bug that caused verbose output in run mode.
