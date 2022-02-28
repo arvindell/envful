@@ -44,7 +44,7 @@ mod run_spec {
         let envful_args: Vec<&str> = envful_args.split_whitespace().collect();
         let mut command_args: Vec<&str> = command.split_whitespace().collect();
         command_args.insert(0, "--");
-        let run_args: Vec<&str> = ["-f", file.as_str(), "-m", manifest.as_str(), "--"]
+        let run_args: Vec<&str> = ["-f", file.as_str(), "-m", manifest.as_str()]
             .iter()
             .chain(envful_args.iter())
             .copied()
