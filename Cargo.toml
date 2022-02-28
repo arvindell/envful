@@ -1,6 +1,6 @@
 [package]
 name = "envful"
-version = "0.5.12"
+version = "1.0.0"
 edition = "2021"
 authors = ["Alex Vilchis <alex@quentli.com>"]
 license = "MIT"
