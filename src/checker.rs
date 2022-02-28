@@ -20,8 +20,20 @@ pub fn check_command(
 
     let mut all_vars: Vec<String> = Vec::new();
 
-    if file.is_some() {
-        let env_file_path = file.unwrap();
+    let env_file_path = match file {
+        Some(path) => Some(path),
+        None => {
+            let path = PathBuf::from(".env");
+            if path.exists() {
+                Some(path)
+            } else {
+                None
+            }
+        }
+    };
+
+    if env_file_path.is_some() {
+        let env_file_path = env_file_path.unwrap();
         // Get given vars from .env file
         let given_vars = parse_env_file(&env_file_path)
             .iter()
