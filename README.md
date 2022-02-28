@@ -73,9 +73,12 @@ USAGE:
     envful [OPTIONS] <SUBCOMMAND>
 
 OPTIONS:
-    -d, --dir <DIR>    Directory to look for .env and .env.example files. Defaults to current directory.
-    -h, --help         Print help information
-    -V, --version      Print version information
+    -f, --file <FILE>            Path to environment file. Defaults to ./.env
+    -h, --help                   Print help information
+    -m, --manifest <MANIFEST>    Path to manifest file. Defaults to ./.env.example
+        --show-optional          Whether to print missing optional variables. Defaults to false
+        --show-undeclared        Whether to show undeclared variables in output. Defaults to false
+    -V, --version                Print version information
 
 SUBCOMMANDS:
     check    Check if env has all required variables and warns if missing
