@@ -17,6 +17,7 @@ mod check_spec {
     fn warns_on_undeclared() -> Result<(), Box<dyn std::error::Error>> {
         run_check("undeclared", true, "not declared", None)
     }
+
     #[test]
     fn warns_on_optional_missing() -> Result<(), Box<dyn std::error::Error>> {
         run_check(
@@ -25,6 +26,32 @@ mod check_spec {
             "Some optional variables are missing",
             None,
         )
+    }
+
+    #[test]
+    fn fails_if_env_file_missing() -> Result<(), Box<dyn std::error::Error>> {
+        let mut cmd = Command::cargo_bin("envful")?;
+        let file = format!("tests/fixtures/success/nonexistent");
+        let manifest = format!("tests/fixtures/success/.env.example");
+        cmd.args(["check", "-f", file.as_str(), "-m", manifest.as_str()]);
+
+        cmd.assert()
+            .failure()
+            .stderr(predicate::str::contains("Could not find environment file"));
+        Ok(())
+    }
+
+    #[test]
+    fn fails_if_manifest_file_missing() -> Result<(), Box<dyn std::error::Error>> {
+        let mut cmd = Command::cargo_bin("envful")?;
+        let file = format!("tests/fixtures/success/.env");
+        let manifest = format!("tests/fixtures/success/nonexistent");
+        cmd.args(["check", "-f", file.as_str(), "-m", manifest.as_str()]);
+
+        cmd.assert()
+            .failure()
+            .stderr(predicate::str::contains("Could not find manifest file"));
+        Ok(())
     }
 
     #[test]
