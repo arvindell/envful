@@ -7,9 +7,12 @@ use std::path::PathBuf;
 #[derive(Parser, Debug)]
 #[clap(version, about, long_about = None)]
 struct Args {
-    /// Directory to look for .env and .env.example files. Defaults to current directory.
+    /// Path to environment file. Defaults to ./.env
     #[clap(short, long, parse(from_os_str), global = true)]
-    dir: Option<PathBuf>,
+    file: Option<PathBuf>,
+    /// Path to manifest file. Defaults to ./.env.example
+    #[clap(short, long, parse(from_os_str), global = true)]
+    manifest: Option<PathBuf>,
 
     /// Command to execute if successful
     #[clap(subcommand)]
@@ -26,9 +29,12 @@ enum Commands {
 
 fn main() {
     let args = Args::parse();
-    let dir = args.dir.unwrap_or_else(|| PathBuf::from("."));
+    let env_file = args.file;
+    let env_manifest = args
+        .manifest
+        .unwrap_or_else(|| PathBuf::from(".env.example"));
     match args.command {
-        Commands::Check => checker::check_command(&dir, true, false),
-        Commands::Other(args) => runner::run_command(&dir, &args),
+        Commands::Check => checker::check_command(env_file, &env_manifest, true, false),
+        Commands::Other(args) => runner::run_command(env_file, &env_manifest, &args),
     }
 }

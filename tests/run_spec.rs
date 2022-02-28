@@ -15,10 +15,10 @@ mod run_spec {
         expected_out_put: &str,
     ) -> Result<(), Box<dyn std::error::Error>> {
         let mut cmd = Command::cargo_bin("envful")?;
-        let dir = format!("tests/fixtures/{}", fixture);
-
+        let file = format!("tests/fixtures/{}/.env", fixture);
+        let manifest = format!("tests/fixtures/{}/.env.example", fixture);
+        let run_args = ["-f", file.as_str(), "-m", manifest.as_str(), "--"];
         let command_args: Vec<&str> = command.split_whitespace().collect();
-        let run_args = ["-d", dir.as_str(), "--"];
         let all_args = run_args.iter().chain(command_args.iter());
         cmd.args(all_args);
 

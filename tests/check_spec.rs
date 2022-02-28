@@ -43,8 +43,10 @@ mod check_spec {
     #[test]
     fn displays_correct_optional() -> Result<(), Box<dyn std::error::Error>> {
         let mut cmd = Command::cargo_bin("envful")?;
-        let dir = format!("tests/fixtures/{}", "two_optional");
-        cmd.args(["check", "-d", dir.as_str()]);
+        let fixture = "two_optional";
+        let file = format!("tests/fixtures/{}/.env", fixture);
+        let manifest = format!("tests/fixtures/{}/.env.example", fixture);
+        cmd.args(["check", "-f", file.as_str(), "-m", manifest.as_str()]);
 
         let has_first = predicate::str::contains("Missing optional variable: SENDGRID_API_KEY");
         let has_second = predicate::str::contains("Missing optional variable: STRIPE_SK");
@@ -59,8 +61,9 @@ mod check_spec {
         env_vars: Option<Vec<(&str, &str)>>,
     ) -> Result<(), Box<dyn std::error::Error>> {
         let mut cmd = Command::cargo_bin("envful")?;
-        let dir = format!("tests/fixtures/{}", fixture);
-        cmd.args(["check", "-d", dir.as_str()]);
+        let file = format!("tests/fixtures/{}/.env", fixture);
+        let manifest = format!("tests/fixtures/{}/.env.example", fixture);
+        cmd.args(["check", "-f", file.as_str(), "-m", manifest.as_str()]);
 
         if env_vars.is_some() {
             for (key, value) in env_vars.unwrap() {

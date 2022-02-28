@@ -4,22 +4,32 @@ use colored::*;
 use std::fs;
 use std::path::PathBuf;
 
-pub fn check_command(dir: &PathBuf, show_undeclared: bool, silent: bool) {
+pub fn check_command(
+    file: Option<PathBuf>,
+    manifest: &PathBuf,
+    show_undeclared: bool,
+    silent: bool,
+) {
     if !silent {
         println!("{}", "Checking environment...".cyan());
     }
 
-    let manifest_path = dir.clone().join(".env.example");
-    let env_file_path = dir.clone().join(".env");
+    let manifest_path = manifest.clone();
     let declared_vars: Vec<EnvVarDeclaration> = parse_manifest_file(&manifest_path);
 
-    // Get given vars from .env file
-    let mut given_vars = parse_env_file(&env_file_path)
-        .iter()
-        // Remove empty vars
-        .filter(|var| !var.value.is_none() && !var.value.as_ref().unwrap().is_empty())
-        .map(|var| var.name.clone())
-        .collect::<Vec<String>>();
+    let mut all_vars: Vec<String> = Vec::new();
+
+    if file.is_some() {
+        let env_file_path = file.unwrap();
+        // Get given vars from .env file
+        let given_vars = parse_env_file(&env_file_path)
+            .iter()
+            // Remove empty vars
+            .filter(|var| !var.value.is_none() && !var.value.as_ref().unwrap().is_empty())
+            .map(|var| var.name.clone())
+            .collect::<Vec<String>>();
+        all_vars.extend(given_vars);
+    }
 
     // Push to given vars the ones set in the system env
     let system_vars: Vec<String> = std::env::vars()
@@ -32,19 +42,19 @@ pub fn check_command(dir: &PathBuf, show_undeclared: bool, silent: bool) {
         })
         .map(|(key, _value)| key)
         .collect();
-    given_vars.extend(system_vars);
+    all_vars.extend(system_vars);
 
     let required_missing_vars: Vec<String> = declared_vars
         .iter()
-        .filter(|v| !v.optional && !given_vars.contains(&v.name))
+        .filter(|v| !v.optional && !all_vars.contains(&v.name))
         .map(|v| v.name.clone())
         .collect();
     let optional_missing_vars: Vec<String> = declared_vars
         .iter()
-        .filter(|v| v.optional && !given_vars.contains(&v.name))
+        .filter(|v| v.optional && !all_vars.contains(&v.name))
         .map(|v| v.name.clone())
         .collect();
-    let undeclared_vars: Vec<String> = given_vars
+    let undeclared_vars: Vec<String> = all_vars
         .iter()
         .filter(|v| {
             !declared_vars
@@ -115,8 +125,10 @@ fn parse_manifest_file(path: &PathBuf) -> Vec<EnvVarDeclaration> {
 
     if content.is_err() {
         eprintln!(
-            "{}",
-            "Could not find .env.example manifest file. If it is not in the working dir, use the -d option."
+            "{}{}{}",
+            "Could not find manifest file: ".red().bold(),
+            path.to_str().unwrap().red().bold(),
+            ". If not in the working dir, use the -m option."
                 .red()
                 .bold()
         );
@@ -182,7 +194,15 @@ fn parse_env_file(path: &PathBuf) -> Vec<EnvVar> {
 
     // If file is not found, return empty vector as vars could be set via system
     if content.is_err() {
-        return Vec::new();
+        eprintln!(
+            "{}{}{}",
+            "Could not find environment file: ".red().bold(),
+            path.to_str().unwrap().red().bold(),
+            ". If not in the working dir, use the -f option."
+                .red()
+                .bold()
+        );
+        std::process::exit(1);
     }
 
     let content = content.unwrap();

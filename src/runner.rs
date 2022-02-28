@@ -3,8 +3,8 @@ use std::path::PathBuf;
 use std::process::Command;
 use which::which;
 
-pub fn run_command(dir: &PathBuf, command: &Vec<String>) {
-    checker::check_command(dir, false, true);
+pub fn run_command(file: Option<PathBuf>, manifest: &PathBuf, command: &Vec<String>) {
+    checker::check_command(file, manifest, false, true);
     let binary = which(command.get(0).unwrap());
     if binary.is_err() {
         panic!("{}", binary.unwrap_err());
