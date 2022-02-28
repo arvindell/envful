@@ -14,6 +14,14 @@ struct Args {
     #[clap(short, long, parse(from_os_str), global = true)]
     manifest: Option<PathBuf>,
 
+    /// Whether to print missing optional variables. Defaults to false.
+    #[clap(long, global = true)]
+    show_optional: bool,
+
+    /// Whether to show undeclared variables in output. Defaults to false.
+    #[clap(long, global = true)]
+    show_undeclared: bool,
+
     /// Command to execute if successful
     #[clap(subcommand)]
     command: Commands,
@@ -23,6 +31,8 @@ struct Args {
 enum Commands {
     /// Check if env has all required variables and warns if missing
     Check,
+
+    /// Any other command you want to execute
     #[clap(external_subcommand)]
     Other(Vec<String>),
 }
@@ -34,7 +44,13 @@ fn main() {
         .manifest
         .unwrap_or_else(|| PathBuf::from(".env.example"));
     match args.command {
-        Commands::Check => checker::check_command(env_file, &env_manifest, true, false),
-        Commands::Other(args) => runner::run_command(env_file, &env_manifest, &args),
+        Commands::Check => checker::check_command(env_file, &env_manifest, false, true, true),
+        Commands::Other(extra_args) => runner::run_command(
+            env_file,
+            &env_manifest,
+            &extra_args,
+            args.show_undeclared,
+            args.show_optional,
+        ),
     }
 }

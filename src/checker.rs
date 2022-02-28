@@ -7,8 +7,9 @@ use std::path::PathBuf;
 pub fn check_command(
     file: Option<PathBuf>,
     manifest: &PathBuf,
-    show_undeclared: bool,
     silent: bool,
+    show_undeclared: bool,
+    show_missing_optional: bool,
 ) {
     if !silent {
         println!("{}", "Checking environment...".cyan());
@@ -85,7 +86,7 @@ pub fn check_command(
         }
     }
 
-    if optional_missing_vars.len() > 0 && !silent {
+    if optional_missing_vars.len() > 0 && show_missing_optional {
         println!("{}", "Some optional variables are missing:".yellow().bold());
         for optional_var in optional_missing_vars {
             println!(

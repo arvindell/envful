@@ -84,7 +84,7 @@ mod check_spec {
     fn run_check(
         fixture: &str,
         should_succeed: bool,
-        expected_out_put: &str,
+        expected_output: &str,
         env_vars: Option<Vec<(&str, &str)>>,
     ) -> Result<(), Box<dyn std::error::Error>> {
         let mut cmd = Command::cargo_bin("envful")?;
@@ -98,7 +98,7 @@ mod check_spec {
             }
         }
 
-        let predicate = predicate::str::contains(expected_out_put);
+        let predicate = predicate::str::contains(expected_output);
         if should_succeed {
             cmd.assert().success().stdout(predicate);
         } else {
