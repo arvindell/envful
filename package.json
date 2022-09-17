@@ -23,6 +23,6 @@
   },
   "homepage": "https://github.com/arvindell/envful#readme",
   "dependencies": {
-    "binary-install": "^0.1.1"
+    "binary-install": "^1.0.6"
   }
 }
