@@ -1,3 +1,3 @@
 ## Bug fixes
 
-- Removed a problem preventing using `./.env` as the default environment file.
+- Fixed npm install location (node_modules/.bin)
