@@ -11,13 +11,7 @@ pub fn run_command(
     show_missing_optional: bool,
 ) {
     // Run the command with the given args
-    checker::check_command(
-        file,
-        manifest,
-        false,
-        show_undeclared,
-        show_missing_optional,
-    );
+    checker::check_command(file, manifest, true, show_undeclared, show_missing_optional);
     let binary = which(command.get(0).unwrap());
     if binary.is_err() {
         panic!("{}", binary.unwrap_err());

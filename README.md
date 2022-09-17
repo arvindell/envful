@@ -87,7 +87,9 @@ SUBCOMMANDS:
 
 ## How to declare variables
 
-Inside your `.env.example` file, you can declare the variables that your application requires. You can use the triple hash market (`###`) to add a description to the variable. Add `[optional]` to a variable for warning instead of failing.
+Inside your `.env.example` file, you can declare the variables that your application requires. You can use the triple hash marker (`###`) to add a description to the variable. 
+
+Add `[optional]` to a variable for warning instead of failing.
 
 Example:
 
@@ -101,6 +103,8 @@ APP_SECRET=
 ### Google Analytics ID [optional]
 GA_ID=
 ```
+
+Note: At the moment any ### marker will be intepreted as the comment for the next variable in the file, regardless of any whitespace between the two lines.
 
 ## Contributions welcome
 
