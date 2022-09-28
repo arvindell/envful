@@ -1,3 +1,3 @@
 ## Bug fixes
 
-- Remove binary-install dependency and control download of binaries 
+- Fix syntax error in npm bin script.
