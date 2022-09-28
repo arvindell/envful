@@ -1,6 +1,6 @@
 {
   "name": "envful",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "A tool to verify the presence of environment variables before running a process",
   "files": [
     "npm/**/*"
@@ -23,6 +23,8 @@
   },
   "homepage": "https://github.com/arvindell/envful#readme",
   "dependencies": {
-    "binary-install": "^1.0.6"
+    "axios": "^0.27.2",
+    "rimraf": "^3.0.2",
+    "tar": "^6.1.11"
   }
 }
