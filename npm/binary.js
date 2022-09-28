@@ -106,7 +106,7 @@ class Binary {
     this.execute();
   }
 
-  execute(args, options) {
+  execute() {
     const [, , ...args] = process.argv;
 
     const options = { cwd: process.cwd(), stdio: "inherit" };
