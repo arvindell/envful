@@ -6,9 +6,9 @@ const axios = require("axios");
 const tar = require("tar");
 const rimraf = require("rimraf");
 
-const error = (msg) => {
+const error = (msg, status) => {
   console.error(msg);
-  process.exit(1);
+  process.exit(status || 1);
 };
 
 class Binary {
@@ -114,8 +114,9 @@ class Binary {
     const result = spawnSync(this.binaryPath, args, options);
 
     if (result.error) {
-      error(result.error);
+      error(result.error, result.status);
     }
+    process.exit(result.status);
   }
 }
 
