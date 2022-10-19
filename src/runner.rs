@@ -14,6 +14,10 @@ pub fn run_command(
     checker::check_command(file, manifest, true, show_undeclared, show_missing_optional);
     let binary = which(command.get(0).unwrap());
     if binary.is_err() {
+        eprintln!(
+            "Could not find binary {}. Make sure the program is in your PATH (not an alias)",
+            command.get(0).unwrap()
+        );
         panic!("{}", binary.unwrap_err());
     }
     let binary = binary.unwrap();
