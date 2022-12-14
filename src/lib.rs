@@ -1,5 +1,4 @@
 pub mod checker;
-pub mod runner;
 
 #[derive(Debug)]
 pub struct EnvVarDeclaration {

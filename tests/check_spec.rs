@@ -33,7 +33,7 @@ mod check_spec {
         let mut cmd = Command::cargo_bin("envful")?;
         let file = format!("tests/fixtures/success/nonexistent");
         let manifest = format!("tests/fixtures/success/.env.example");
-        cmd.args(["check", "-f", file.as_str(), "-m", manifest.as_str()]);
+        cmd.args(["-e", file.as_str(), "-m", manifest.as_str()]);
 
         cmd.assert()
             .failure()
@@ -46,7 +46,7 @@ mod check_spec {
         let mut cmd = Command::cargo_bin("envful")?;
         let file = format!("tests/fixtures/success/.env");
         let manifest = format!("tests/fixtures/success/nonexistent");
-        cmd.args(["check", "-f", file.as_str(), "-m", manifest.as_str()]);
+        cmd.args(["-e", file.as_str(), "-m", manifest.as_str()]);
 
         cmd.assert()
             .failure()
@@ -73,7 +73,7 @@ mod check_spec {
         let fixture = "two_optional";
         let file = format!("tests/fixtures/{}/.env", fixture);
         let manifest = format!("tests/fixtures/{}/.env.example", fixture);
-        cmd.args(["check", "-f", file.as_str(), "-m", manifest.as_str()]);
+        cmd.args(["-e", file.as_str(), "-m", manifest.as_str()]);
 
         let has_first = predicate::str::contains("Missing optional variable: SENDGRID_API_KEY");
         let has_second = predicate::str::contains("Missing optional variable: STRIPE_SK");
@@ -90,7 +90,7 @@ mod check_spec {
         let mut cmd = Command::cargo_bin("envful")?;
         let file = format!("tests/fixtures/{}/.env", fixture);
         let manifest = format!("tests/fixtures/{}/.env.example", fixture);
-        cmd.args(["check", "-f", file.as_str(), "-m", manifest.as_str()]);
+        cmd.args(["-e", file.as_str(), "-m", manifest.as_str()]);
 
         if env_vars.is_some() {
             for (key, value) in env_vars.unwrap() {
